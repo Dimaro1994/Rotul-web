@@ -1,6 +1,6 @@
-# Rotulweb (React)
+Ôªø# Rotulweb (React)
 
-## Arranque r·pido
+## Arranque r√°pido
 
 1. Instala dependencias:
    npm install
@@ -11,6 +11,6 @@
 ## Estructura
 
 - src/: componentes y estilos de React.
-- public/: recursos est·ticos.
-- vite.config.js: configuraciÛn de Vite.
+- public/: recursos est√°ticos.
+- vite.config.js: configuraci√≥n de Vite.
 - package.json: scripts y dependencias.
