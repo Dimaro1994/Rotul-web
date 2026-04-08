@@ -1,27 +1,28 @@
 ﻿import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import ChatBot from "./ChatBot";
 
 const services = [
   {
     icon: "DG",
-    title: "Diseño gráfico que convierte en ventas",
+    title: "Diseño pensado para vender, no solo para verse bonito",
     description:
       "Identidad visual, piezas publicitarias y creatividades pensadas para atraer y vender.",
-    cta: "Analizar mi web gratis",
+    cta: "Auditar mi web GRATIS",
   },
   {
     icon: "WEB",
     title: "Webs optimizadas para captar clientes",
     description:
       "Webs rápidas, optimizadas para conversión y preparadas para crecer contigo.",
-    cta: "Quiero más clientes",
+    cta: "Auditar mi web GRATIS",
   },
   {
     icon: "ADS",
     title: "Publicidad enfocada en generar clientes",
     description:
       "Campañas estratégicas para generar tráfico de calidad y clientes potenciales.",
-    cta: "Ver cómo puedo conseguir clientes",
+    cta: "Quiero mi estrategia",
   },
 ];
 
@@ -139,6 +140,45 @@ function fadeIn(delay = 0) {
 }
 
 function App() {
+  const [stickyCtaLabel, setStickyCtaLabel] = useState("Auditar web");
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    function updateStickyCta() {
+      const scrollTop = window.scrollY;
+      const scrollableHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? scrollTop / scrollableHeight : 0;
+      const viewportMid = window.innerHeight / 2;
+
+      const denseSections = ["portfolio", "testimonios"]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+      const insideDenseSection = denseSections.some((section) => {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= viewportMid && rect.bottom >= viewportMid;
+      });
+
+      let nextLabel = "Auditar web";
+      if (progress >= 0.72) {
+        nextLabel = "Quiero mi estrategia";
+      } else if (progress >= 0.3) {
+        nextLabel = "Quiero mi estrategia";
+      }
+
+      setStickyCtaLabel((prev) => (prev === nextLabel ? prev : nextLabel));
+      setShowStickyCta(scrollTop > 180 && !insideDenseSection);
+    }
+
+    updateStickyCta();
+    window.addEventListener("scroll", updateStickyCta, { passive: true });
+    window.addEventListener("resize", updateStickyCta);
+    return () => {
+      window.removeEventListener("scroll", updateStickyCta);
+      window.removeEventListener("resize", updateStickyCta);
+    };
+  }, []);
+
   return (
     <>
       <header className="topbar">
@@ -150,7 +190,7 @@ function App() {
           <a href="#portfolio">Proyectos</a>
           <a href="#contacto">Contacto</a>
           <a href="#contacto" className="nav-cta">
-            Presupuesto
+            Analizar mi web
           </a>
         </nav>
       </header>
@@ -160,27 +200,48 @@ function App() {
           <div className="hero-bg-shape hero-bg-shape-1" />
           <div className="hero-bg-shape hero-bg-shape-2" />
           <motion.div className="hero-copy" {...fadeIn(0.05)}>
-            <p className="eyebrow">Diseño, desarrollo y marketing digital</p>
-            <h1>Convertimos visitas en clientes con webs diseñadas para vender</h1>
+            <p className="eyebrow">Diagnóstico real de conversión</p>
+            <h1>¿Tu web no te está trayendo clientes?</h1>
             <p className="subtitle">
-              Para negocios locales y empresas que quieren dejar de perder
-              clientes online.
+              La mayoría de webs no venden. La tuya probablemente tampoco (y te
+              explico por qué).
+            </p>
+            <p className="subtitle subtitle-hook">
+              No es tráfico. Es tu web. Y tiene solución.
+            </p>
+            <p className="subtitle anti-objection">
+              No necesitas invertir miles en publicidad. Si tu web no convierte,
+              da igual cuánto tráfico tengas.
             </p>
             <p className="subtitle subtitle-strong">
-              Sin depender de recomendaciones ni perder oportunidades online.
+              Solo aceptamos 5 proyectos nuevos al mes.
             </p>
-            <div className="hero-cta">
-              <a className="btn btn-primary" href="#contacto">
-                Quiero más clientes
-              </a>
+            <div className="hero-auto-reply">
+              <p className="hero-auto-reply-title">
+                Analizo webs todos los días.
+                <br />
+                El 90% falla en lo mismo... y seguramente la tuya también.
+              </p>
+              <p className="hero-auto-reply-text">
+                Te lo explico gratis en 5 minutos.
+              </p>
               <a className="btn btn-secondary" href="#contacto">
-                Auditar mi web gratis
+                Quiero mi análisis
               </a>
             </div>
+            <div className="hero-cta">
+              <a className="btn btn-primary" href="#contacto">
+                Auditar mi web GRATIS
+              </a>
+              <a className="btn btn-tertiary" href="#contacto">
+                Quiero mi estrategia
+              </a>
+            </div>
+            <p className="hero-urgency">⚠️ Solo 2 plazas disponibles este mes</p>
             <div className="hero-proof">
               <span>⭐ +50 proyectos realizados</span>
-              <span>⭐ Clientes en toda España</span>
-              <span>⚠️ Plazas limitadas cada mes</span>
+              <span>⭐ Negocios en toda España</span>
+              <span>⚠️ Solo 5 proyectos nuevos al mes</span>
             </div>
           </motion.div>
 
@@ -192,6 +253,84 @@ function App() {
             </div>
           </motion.div>
         </section>
+
+        <motion.section className="section" id="portfolio" {...fadeIn()}>
+          <h2>Portfolio y trabajos</h2>
+          <p className="section-intro">
+            Casos con enfoque en conversión para demostrar impacto real.
+          </p>
+          <p className="section-intro section-intro-strong">
+            No hacemos webs bonitas. Hacemos webs que generan resultados.
+          </p>
+          <div className="grid portfolio-grid">
+            {portfolioItems.map((item) => (
+              <article className="card portfolio-card" key={item.name}>
+                <div className="portfolio-mockup">
+                  <img src={item.image} alt={item.imageAlt} />
+                </div>
+                <h3>{item.name}</h3>
+                <p className="result">{item.result}</p>
+                <p>
+                  <strong>Antes:</strong> {item.before}
+                </p>
+                <p>
+                  <strong>Después:</strong> {item.after}
+                </p>
+                <div className="portfolio-actions">
+                  <a href="#contacto" className="btn btn-secondary">
+                    Ver estrategia completa
+                  </a>
+                  <a href="#contacto" className="text-link">
+                    Ver cómo conseguimos estos resultados
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section className="section" id="testimonios" {...fadeIn()}>
+          <h2>Testimonios</h2>
+          <p className="section-intro">
+            Más de 50 negocios ya están consiguiendo clientes con nosotros.
+          </p>
+          <div className="sectors-proof">
+            <span>Clínica</span>
+            <span>Inmobiliaria</span>
+            <span>Ecommerce</span>
+          </div>
+          <div className="grid testimonials-grid">
+            {testimonials.map((item) => (
+              <article className="card testimonial-card" key={item.author}>
+                <div className="testimonial-head">
+                  <img src={item.avatar} alt={item.author} />
+                  <div>
+                    <p className="author">{item.author}</p>
+                    <p className="stars">⭐⭐⭐⭐⭐</p>
+                  </div>
+                </div>
+                <p className="quote">"{item.quote}"</p>
+              </article>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section className="section process" {...fadeIn()}>
+          <h2>Proceso de trabajo</h2>
+          <p className="section-intro">
+            Te acompañamos en todo el proceso para que no tengas que preocuparte
+            de nada.
+          </p>
+          <div className="process-line">
+            {processSteps.map((step, index) => (
+              <div key={step.title} className="step">
+                <span>{index + 1}</span>
+                <p className="step-title">{step.title}</p>
+                <p className="step-benefit">{step.benefit}</p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
 
         <motion.section className="section" id="servicios" {...fadeIn()}>
           <h2>Servicios</h2>
@@ -255,76 +394,52 @@ function App() {
           </div>
         </motion.section>
 
-        <motion.section className="section" id="portfolio" {...fadeIn()}>
-          <h2>Portfolio y trabajos</h2>
-          <p className="section-intro">
-            Casos con enfoque en conversión para demostrar impacto real.
+        <motion.section className="section cta-strong" id="contacto" {...fadeIn()}>
+          <h2>Empieza a conseguir clientes hoy</h2>
+          <p className="reply-time">Respuesta en menos de 24h</p>
+          <p>
+            Cuéntame tu objetivo y te propongo una estrategia clara para atraer
+            más clientes.
           </p>
-          <p className="section-intro section-intro-strong">
-            No hacemos webs bonitas. Hacemos webs que generan resultados.
-          </p>
-          <div className="grid portfolio-grid">
-            {portfolioItems.map((item) => (
-              <article className="card portfolio-card" key={item.name}>
-                <div className="portfolio-mockup">
-                  <img src={item.image} alt={item.imageAlt} />
-                </div>
-                <h3>{item.name}</h3>
-                <p className="result">{item.result}</p>
-                <p>
-                  <strong>Antes:</strong> {item.before}
-                </p>
-                <p>
-                  <strong>Después:</strong> {item.after}
-                </p>
-                <div className="portfolio-actions">
-                  <a href="#contacto" className="btn btn-secondary">
-                    Ver estrategia completa
-                  </a>
-                  <a href="#contacto" className="text-link">
-                    Ver cómo conseguimos estos resultados
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
+          <form className="contact-form">
+            <label htmlFor="name">Nombre</label>
+            <input id="name" name="name" type="text" placeholder="Tu nombre" />
+            <label htmlFor="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="tu@email.com" />
+            <label htmlFor="message">¿Qué necesitas?</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="¿Qué tipo de clientes quieres conseguir y qué estás haciendo ahora?"
+            />
+            <p className="form-commitment">
+              🔒 Sin compromiso · Te respondemos en menos de 24h
+            </p>
+            <button type="submit" className="btn btn-primary">
+              Quiero mi estrategia
+            </button>
+            <p className="form-note">
+              Te responderé personalmente con mejoras concretas para tu negocio.
+            </p>
+            <p className="form-authority">
+              Solo trabajamos con proyectos que realmente podemos hacer crecer.
+            </p>
+          </form>
         </motion.section>
 
-        <motion.section className="section" {...fadeIn()}>
-          <h2>Testimonios</h2>
-          <p className="section-intro">
-            Más de 50 negocios ya están consiguiendo clientes con nosotros.
+        <motion.section className="section final-close" {...fadeIn()}>
+          <h2>
+            Si tu web no te está trayendo clientes, no es casualidad. Es cómo
+            está hecha.
+          </h2>
+          <p>
+            Déjame revisarla y te digo exactamente qué cambiar.
           </p>
-          <div className="grid testimonials-grid">
-            {testimonials.map((item) => (
-              <article className="card testimonial-card" key={item.author}>
-                <div className="testimonial-head">
-                  <img src={item.avatar} alt={item.author} />
-                  <div>
-                    <p className="author">{item.author}</p>
-                    <p className="stars">⭐⭐⭐⭐⭐</p>
-                  </div>
-                </div>
-                <p className="quote">"{item.quote}"</p>
-              </article>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section className="section process" {...fadeIn()}>
-          <h2>Proceso de trabajo</h2>
-          <p className="section-intro">
-            Te acompañamos en todo el proceso para que no tengas que preocuparte
-            de nada.
-          </p>
-          <div className="process-line">
-            {processSteps.map((step, index) => (
-              <div key={step.title} className="step">
-                <span>{index + 1}</span>
-                <p className="step-title">{step.title}</p>
-                <p className="step-benefit">{step.benefit}</p>
-              </div>
-            ))}
+          <div className="hero-cta">
+            <a className="btn btn-primary" href="#contacto">
+              Auditar mi web GRATIS
+            </a>
           </div>
         </motion.section>
 
@@ -350,51 +465,6 @@ function App() {
             </article>
           </div>
         </motion.section>
-
-        <motion.section className="section cta-strong" id="contacto" {...fadeIn()}>
-          <h2>Empieza a conseguir clientes hoy</h2>
-          <p className="reply-time">Respuesta en menos de 24h</p>
-          <p>
-            Cuéntame tu objetivo y te propongo una estrategia clara para atraer
-            más clientes.
-          </p>
-          <form className="contact-form">
-            <label htmlFor="name">Nombre</label>
-            <input id="name" name="name" type="text" placeholder="Tu nombre" />
-            <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" placeholder="tu@email.com" />
-            <label htmlFor="message">¿Qué necesitas?</label>
-            <textarea
-              id="message"
-              name="message"
-              rows="4"
-              placeholder="¿Qué tipo de clientes quieres conseguir y qué estás haciendo ahora?"
-            />
-            <p className="form-commitment">
-              🔒 Sin compromiso · Te respondemos en menos de 24h
-            </p>
-            <button type="submit" className="btn btn-primary">
-              Quiero más clientes
-            </button>
-            <p className="form-note">
-              Te diremos exactamente qué mejorar para conseguir más clientes.
-            </p>
-            <p className="form-authority">
-              Solo trabajamos con proyectos que realmente podemos hacer crecer.
-            </p>
-          </form>
-        </motion.section>
-
-        <motion.section className="section final-close" {...fadeIn()}>
-          <h2>Empieza a conseguir clientes de forma predecible</h2>
-          <p>
-            Si tu web no está generando clientes, no es un problema de tráfico.
-            Es un problema de estrategia.
-          </p>
-          <a className="btn btn-primary" href="#contacto">
-            Quiero más clientes
-          </a>
-        </motion.section>
       </main>
 
       <footer className="footer">
@@ -407,6 +477,11 @@ function App() {
           <a href="https://instagram.com" target="_blank" rel="noreferrer">
             Instagram
           </a>
+        </div>
+        <div className="footer-trust">
+          <span>Trabajamos con negocios en toda España</span>
+          <span>+50 proyectos realizados</span>
+          <span>Respuesta en menos de 24h</span>
         </div>
       </footer>
 
@@ -421,8 +496,11 @@ function App() {
         WhatsApp
       </a>
 
-      <a className="sticky-quote-cta" href="#contacto">
-        Solicitar presupuesto
+      <a
+        className={`sticky-quote-cta ${showStickyCta ? "" : "sticky-quote-cta--hidden"}`}
+        href="#contacto"
+      >
+        {stickyCtaLabel}
       </a>
 
       <ChatBot />
@@ -431,3 +509,5 @@ function App() {
 }
 
 export default App;
+
+
