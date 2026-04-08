@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diseño web en Málaga | Webs que generan clientes</title>
+    <meta
+      name="description"
+      content="Diseño web en Málaga: creamos webs que generan clientes para negocios locales y empresas que quieren vender más." 
+    />
+    <meta
+      name="keywords"
+      content="diseño web Málaga, webs que generan clientes, desarrollo web, publicidad digital, marketing, captación de clientes"
+    />
+    <meta name="theme-color" content="#062a58" />
+    <meta property="og:title" content="Diseño web en Málaga | Webs que generan clientes" />
+    <meta
+      property="og:description"
+      content="Creamos webs orientadas a conversión para conseguir más clientes en Málaga y toda España."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/logo-transparente.png" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-XXXXXXXXXX");
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Crisp Chat -->
+    <script type="text/javascript">
+      window.$crisp = [];
+      window.CRISP_WEBSITE_ID = "TU-WEBSITE-ID-AQUI"; // Reemplaza con tu ID de Crisp
+
+      // Configuración del chat
+      window.$crisp.push(["set", "session:segments", [["web-visitor"]]]);
+
+      // Mensaje de bienvenida automático tras 8 segundos
+      window.$crisp.push(["on", "session:loaded", function () {
+        setTimeout(function () {
+          window.$crisp.push(["do", "message:show", [
+            "text",
+            "👋 ¡Hola! ¿Buscas más clientes para tu negocio? Cuéntame qué necesitas y te ayudo ahora mismo."
+          ]]);
+        }, 8000);
+      }]);
+
+      (function () {
+        var d = document;
+        var s = d.createElement("script");
+        s.src = "https://client.crisp.chat/l.js";
+        s.async = 1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+﻿<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#071E42"/>
+  <rect x="42" y="42" width="1116" height="636" rx="28" fill="#0E3A7D"/>
+  <rect x="92" y="92" width="1016" height="80" rx="16" fill="#0A2B5B"/>
+  <rect x="120" y="116" width="190" height="34" rx="8" fill="#5CC8FF"/>
+  <rect x="92" y="204" width="476" height="320" rx="22" fill="#0A2F65"/>
+  <rect x="124" y="244" width="250" height="28" rx="8" fill="#C9ECFF"/>
+  <rect x="124" y="286" width="400" height="16" rx="8" fill="#76BFFF"/>
+  <rect x="124" y="316" width="370" height="16" rx="8" fill="#76BFFF"/>
+  <rect x="124" y="358" width="170" height="44" rx="12" fill="#19A0FF"/>
+  <rect x="596" y="204" width="512" height="220" rx="22" fill="#0A2F65"/>
+  <rect x="628" y="236" width="448" height="28" rx="8" fill="#D9F3FF"/>
+  <rect x="628" y="280" width="420" height="16" rx="8" fill="#78C0FF"/>
+  <rect x="628" y="308" width="360" height="16" rx="8" fill="#78C0FF"/>
+  <rect x="596" y="444" width="512" height="80" rx="18" fill="#1556AA"/>
+  <text x="628" y="494" fill="#EAF8FF" font-size="30" font-family="Arial, sans-serif" font-weight="700">Proyecto clínica dental</text>
+  <text x="92" y="620" fill="#B9DFFF" font-size="28" font-family="Arial, sans-serif">Landing de captación con enfoque en conversión</text>
+</svg>

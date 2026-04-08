@@ -1,0 +1,17 @@
+﻿<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#051B35"/>
+  <rect x="42" y="42" width="1116" height="636" rx="28" fill="#0E3565"/>
+  <rect x="92" y="92" width="1016" height="74" rx="14" fill="#0A274D"/>
+  <rect x="120" y="114" width="260" height="30" rx="8" fill="#6ED5FF"/>
+  <rect x="92" y="196" width="1016" height="250" rx="20" fill="#0A2F5D"/>
+  <rect x="128" y="232" width="390" height="38" rx="10" fill="#E5F8FF"/>
+  <rect x="128" y="286" width="460" height="18" rx="8" fill="#8ACBFF"/>
+  <rect x="128" y="318" width="420" height="18" rx="8" fill="#8ACBFF"/>
+  <rect x="128" y="356" width="210" height="52" rx="14" fill="#1AA4FF"/>
+  <rect x="628" y="232" width="440" height="178" rx="16" fill="#14539F"/>
+  <text x="678" y="336" fill="#EAF8FF" font-size="54" font-family="Arial, sans-serif" font-weight="800">3X</text>
+  <text x="744" y="336" fill="#BEE8FF" font-size="28" font-family="Arial, sans-serif" font-weight="700">más clientes</text>
+  <rect x="92" y="474" width="1016" height="164" rx="20" fill="#1556AA"/>
+  <text x="126" y="545" fill="#EAF8FF" font-size="34" font-family="Arial, sans-serif" font-weight="700">Caso real de negocio local</text>
+  <text x="126" y="590" fill="#D7EEFF" font-size="25" font-family="Arial, sans-serif">Estrategia digital completa + landing optimizada</text>
+</svg>
