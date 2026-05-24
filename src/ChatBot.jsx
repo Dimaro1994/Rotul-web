@@ -6,25 +6,25 @@ const BOT_STEPS = [
     message:
       "He analizado muchas webs como la tuya. La mayoría pierde clientes sin saberlo. ¿Quieres que te diga si te está pasando?",
     options: [
-      { label: "Si, revisala", next: "mejora" },
+      { label: "Sí, revísala", next: "mejora" },
       { label: "Quiero una web nueva", next: "web" },
-      { label: "Quiero mas clientes con publicidad", next: "ads" },
-      { label: "Quiero saber precio", next: "precio" },
+      { label: "Quiero más clientes con publicidad", next: "ads" },
+      { label: "Quiero una auditoría gratuita", next: "mejora" },
     ],
   },
   {
     id: "web",
     message:
-      "Perfecto. Una web nueva bien enfocada puede cambiar tus resultados rapido. Tienes ya negocio en marcha?",
+      "Perfecto. Una web nueva bien enfocada puede cambiar tus resultados rápido. ¿Tienes ya negocio en marcha?",
     options: [
-      { label: "Si, negocio en marcha", next: "nombre" },
+      { label: "Sí, negocio en marcha", next: "nombre" },
       { label: "Estoy empezando", next: "nombre" },
     ],
   },
   {
     id: "mejora",
     message:
-      "Entendido. Muchas webs no convierten por estructura, copy o propuesta. Cual es el mayor problema ahora?",
+      "Entendido. Muchas webs no convierten por estructura, copy o propuesta. ¿Cuál es el mayor problema ahora?",
     options: [
       { label: "No recibo contactos", next: "nombre" },
       { label: "La web se ve antigua", next: "nombre" },
@@ -34,25 +34,15 @@ const BOT_STEPS = [
   {
     id: "ads",
     message:
-      "La publicidad bien montada multiplica resultados. Tienes web actualmente?",
+      "La publicidad bien montada multiplica resultados. ¿Tienes web actualmente?",
     options: [
-      { label: "Si, tengo web", next: "nombre" },
+      { label: "Sí, tengo web", next: "nombre" },
       { label: "No tengo web", next: "nombre" },
     ],
   },
   {
-    id: "precio",
-    message:
-      "Trabajamos desde 500 EUR en adelante, segun objetivos y alcance. Quieres un presupuesto personalizado?",
-    options: [
-      { label: "Si, quiero presupuesto", next: "nombre" },
-      { label: "Primero quiero una auditoria", next: "mejora" },
-    ],
-  },
-  {
     id: "nombre",
-    message:
-      "Genial. Como te llamas para atenderte de forma personalizada?",
+    message: "Genial. ¿Cómo te llamas para atenderte de forma personalizada?",
     input: true,
     inputPlaceholder: "Tu nombre...",
     next: "final",
@@ -66,7 +56,7 @@ const BOT_STEPS = [
         label: "Abrir WhatsApp",
         action: () =>
           window.open(
-            "https://wa.me/34600000000?text=Hola%2C%20quiero%20informacion%20sobre%20una%20web%20para%20mi%20negocio",
+            "https://wa.me/34633833407?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20web%20para%20mi%20negocio",
             "_blank"
           ),
       },
@@ -85,13 +75,7 @@ export default function ChatBot() {
   const [currentStep, setCurrentStep] = useState("welcome");
   const [inputValue, setInputValue] = useState("");
   const [userName, setUserName] = useState("");
-  const [showNotif, setShowNotif] = useState(false);
   const bottomRef = useRef(null);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShowNotif(true), 5000);
-    return () => clearTimeout(t);
-  }, []);
 
   useEffect(() => {
     if (open && messages.length === 0) {
@@ -154,11 +138,8 @@ export default function ChatBot() {
     <>
       <button
         className="chatbot-toggle"
-        onClick={() => {
-          setOpen((o) => !o);
-          setShowNotif(false);
-        }}
-        aria-label="Abrir chat de atencion"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Abrir chat de atención"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -170,28 +151,21 @@ export default function ChatBot() {
             <path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z" />
           </svg>
         )}
-        {showNotif && !open && <span className="chatbot-notif">1</span>}
       </button>
 
-      {showNotif && !open && (
-        <div
-          className="chatbot-bubble"
-          onClick={() => {
-            setOpen(true);
-            setShowNotif(false);
-          }}
-        >
-          Creo que tu web esta perdiendo clientes. Quieres saber por que?
-        </div>
+      {!open && (
+        <a className="chatbot-bubble" href="#contacto">
+          ¿Quieres que revise tu web gratis en 5 min?
+        </a>
       )}
 
       {open && (
-        <div className="chatbot-window" role="dialog" aria-label="Chat de atencion al cliente">
+        <div className="chatbot-window" role="dialog" aria-label="Chat de atención al cliente">
           <div className="chatbot-header">
             <div className="chatbot-avatar">R</div>
             <div>
               <p className="chatbot-name">Asesor Rotulweb</p>
-              <p className="chatbot-status">En linea ahora</p>
+              <p className="chatbot-status">En línea ahora</p>
             </div>
             <button className="chatbot-close" onClick={() => setOpen(false)} aria-label="Cerrar chat">
               x
@@ -235,4 +209,3 @@ export default function ChatBot() {
     </>
   );
 }
-

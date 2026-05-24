@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "set BROWSER=chrome&& vite --open",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "backend": "node server.js",
+    "dev:full": "concurrently \"npm run backend\" \"npm run dev\""
   },
   "dependencies": {
     "framer-motion": "^11.11.17",
