@@ -1,0 +1,359 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║              🧪 CÓMO PROBAR QUE TU AGENTE FUNCIONA                ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+
+📋 PRUEBA 1: VERIFICAR INSTALACIÓN
+═══════════════════════════════════════════════════════════════════
+
+Abre terminal y ejecuta:
+    node testAgente.js
+
+O haz doble clic en:
+    test-agente.bat
+
+Verifica que muestra:
+    ✅ models/Client.js
+    ✅ models/Task.js
+    ✅ config/database.js
+    ✅ routes/clients.js
+    ✅ notifications.js
+    ✅ src/components/Dashboard.jsx
+    ✅ src/AppRouter.jsx
+    ✅ etc...
+
+Si todo está en ✅ → Instalación correcta
+
+
+═══════════════════════════════════════════════════════════════════
+🧪 PRUEBA 2: CREAR UN CLIENTE
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Inicia el sistema completo
+    npm run start:all
+
+PASO 2: Espera 30 segundos a que todo cargue
+
+PASO 3: Abre en navegador
+    http://localhost:5173?admin=dashboard
+
+PASO 4: Haz clic en "➕ Nuevo Cliente"
+
+PASO 5: Llena el formulario mínimo:
+    ✏️ Nombre Empresa: "Test Empresa 001"
+    ✏️ Nombre Contacto: "Tu Nombre"
+    ✏️ Email: "tu@email.com"
+    ✏️ Teléfono: "+34123456789"
+    ✏️ Tipo Proyecto: "website"
+
+PASO 6: Haz clic en "✅ Crear Cliente"
+
+✅ SI FUNCIONA:
+    • Aparece un mensaje: "✅ Cliente creado exitosamente"
+    • El cliente aparece en el dashboard
+    • Las estadísticas se actualizan
+    • Recibes un email de confirmación
+
+❌ SI NO FUNCIONA:
+    • Abre consola (F12 en navegador)
+    • Revisa "Network" → POST /api/clients
+    • Verifica que backend está en http://localhost:5000
+
+
+═══════════════════════════════════════════════════════════════════
+🔄 PRUEBA 3: CAMBIAR ESTADO DEL CLIENTE
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: En el dashboard, encontrar el cliente creado
+
+PASO 2: Haz clic en el botón "⚙️ Procesar"
+
+PASO 3: El estado debería cambiar a "in-progress"
+
+✅ SI FUNCIONA:
+    • El estado cambia en el dashboard
+    • Se envía un email al cliente notificando
+    • La tarjeta se actualiza
+
+PASO 4: Haz clic en "✅ Completar"
+
+✅ SI FUNCIONA:
+    • El estado cambia a "completed"
+    • Se envía un email de finalización
+    • La tarjeta cambia de color
+
+
+═══════════════════════════════════════════════════════════════════
+⏰ PRUEBA 4: HORARIO DEL AGENTE
+═══════════════════════════════════════════════════════════════════
+
+Para probar que el horario funciona:
+
+OPCIÓN A: Cambiar hora del sistema (solo para probar)
+    1. Haz clic en hora en barra de tareas
+    2. Cambia la hora a 7:55 AM
+    3. Espera 5 minutos
+    4. Debería iniciar el agente
+    5. Vuelve a cambiar a la hora correcta
+
+OPCIÓN B: Leer los logs de la consola
+    Cuando ejecutas: npm run start:all o iniciar-agente-automatico.bat
+
+    Debería mostrar:
+    ⏰ 08:00 - Iniciando servicios...
+    🖥️  Iniciando Backend...
+    🤖 Iniciando Bot de Email...
+    💻 Iniciando Frontend...
+
+    Y luego:
+    ⏰ 20:00 - Deteniendo servicios...
+    ⏹️ Servicios detenidos
+
+OPCIÓN C: Revisar línea de estado
+    La consola debe mostrar:
+    "✅ ABIERTO - Sistema en funcionamiento" (L-V 8am-8pm)
+    "❌ CERRADO - Fuera de horario" (L-V fuera de 8am-8pm)
+    "❌ CERRADO - Es fin de semana" (Sábado/Domingo)
+
+
+═══════════════════════════════════════════════════════════════════
+📧 PRUEBA 5: EMAILS AUTOMÁTICOS
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Crea un cliente (ver PRUEBA 2)
+
+✅ SI FUNCIONA:
+    • Recibes email en tu bandeja
+    • Asunto: "✅ Hemos recibido tu solicitud - [Empresa]"
+    • Contiene resumen del proyecto
+
+PASO 2: Cambia el estado a "in-progress"
+
+✅ SI FUNCIONA:
+    • Recibes otro email
+    • Asunto: "🚀 Tu proyecto ha comenzado"
+    • Muestra porcentaje de progreso
+
+PASO 3: Cambia a "completed"
+
+✅ SI FUNCIONA:
+    • Recibes email final
+    • Asunto: "✅ ¡Tu proyecto está completado!"
+    • Instrucciones para el cliente
+
+
+═══════════════════════════════════════════════════════════════════
+📊 PRUEBA 6: ESTADÍSTICAS EN TIEMPO REAL
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Abre dashboard
+    http://localhost:5173?admin=dashboard
+
+PASO 2: En la parte superior ves 4 tarjetas:
+    • Total Clientes
+    • En Proceso
+    • Completados
+    • Presupuesto Total
+
+PASO 3: Crea un cliente nuevo
+
+✅ SI FUNCIONA:
+    • El contador "Total Clientes" aumenta
+    • El presupuesto se actualiza
+
+PASO 4: Cambia el estado a "in-progress"
+
+✅ SI FUNCIONA:
+    • El contador "En Proceso" aumenta
+    • El contador "Total Clientes" se mantiene igual
+
+PASO 5: Cambia a "completed"
+
+✅ SI FUNCIONA:
+    • El contador "Completados" aumenta
+    • El contador "En Proceso" disminuye
+
+
+═══════════════════════════════════════════════════════════════════
+🔌 PRUEBA 7: API REST
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Asegúrate de que backend está corriendo
+    npm run backend
+
+PASO 2: Abre navegador
+    http://localhost:5000/health
+
+✅ SI FUNCIONA:
+    Muestra:
+    {
+      "status": "OK",
+      "message": "Rotulweb API running"
+    }
+
+PASO 3: Ver estadísticas
+    http://localhost:5000/api/dashboard/stats
+
+✅ SI FUNCIONA:
+    Muestra JSON con:
+    {
+      "totalClients": 1,
+      "clientsInProgress": 0,
+      "clientsCompleted": 0,
+      "totalBudget": 5000,
+      "pendingPayments": 1
+    }
+
+PASO 4: Ver todos los clientes
+    http://localhost:5000/api/clients
+
+✅ SI FUNCIONA:
+    Muestra array con todos los clientes creados
+
+
+═══════════════════════════════════════════════════════════════════
+🖥️ PRUEBA 8: FILTROS
+═══════════════════════════════════════════════════════════════════
+
+En el dashboard hay botones de filtro:
+    • Todos
+    • Nuevos
+    • En Proceso
+    • En Revisión
+    • Completados
+
+✅ SI FUNCIONA:
+    • Haz clic en cada filtro
+    • Solo muestra clientes en ese estado
+    • El contador en el botón es correcto
+
+
+═══════════════════════════════════════════════════════════════════
+🎨 PRUEBA 9: PROGRESO Y PAGOS
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Abre dashboard
+    http://localhost:5173?admin=dashboard
+
+PASO 2: Busca una tarjeta de cliente
+
+PASO 3: Verifica que muestra:
+    ✅ Barras de progreso (Diseño y Desarrollo)
+    ✅ Porcentaje (0-100%)
+    ✅ Badge de estado de pago (pending/partial/completed)
+
+✅ FUNCIONA si:
+    • Las barras se ven
+    • El color cambia según porcentaje
+    • El estado de pago está visible
+
+
+═══════════════════════════════════════════════════════════════════
+⚙️ PRUEBA 10: FORMULARIO
+═══════════════════════════════════════════════════════════════════
+
+PASO 1: Haz clic en "➕ Nuevo Cliente"
+
+✅ SI FUNCIONA:
+    • Se abre un modal
+    • Tiene 10 secciones visibles
+
+PASO 2: Verifica cada sección:
+    1. ✏️ Información Básica
+    2. 🎯 Tipo de Proyecto
+    3. 🎨 Preferencias de Diseño
+    4. ⚙️ Funcionalidades
+    5. 🔗 Integraciones
+    6. 📄 Páginas
+    7. 📝 Contenido
+    8. 💻 Técnico
+    9. 💰 Comercial
+    10. 📌 Notas
+
+PASO 3: Prueba validación
+    • Intenta enviar sin llenar campos requeridos (*)
+    • Debería mostrar error
+
+PASO 4: Prueba checkboxes
+    • Marca varias funcionalidades
+    • Marca varias integraciones
+    • Marca varias páginas
+    • Debería guardarse todo
+
+
+═══════════════════════════════════════════════════════════════════
+✅ CHECKLIST FINAL
+═══════════════════════════════════════════════════════════════════
+
+Marca las pruebas que pasaron:
+
+    ☐ Archivos instalados correctamente
+    ☐ Dependencias instaladas
+    ☐ Configuración .env
+    ☐ Crear cliente funciona
+    ☐ Cambiar estado funciona
+    ☐ Emails se reciben
+    ☐ Estadísticas se actualizan
+    ☐ API REST responde
+    ☐ Filtros funcionan
+    ☐ Horario se respeta
+    ☐ Dashboard se ve bien
+    ☐ Formulario valida datos
+
+Si todas están ☑️ → ¡Tu agente está perfecto!
+
+
+═══════════════════════════════════════════════════════════════════
+🆘 SI ALGO NO FUNCIONA
+═══════════════════════════════════════════════════════════════════
+
+PROBLEMA: Dashboard no carga
+SOLUCIÓN:
+    1. Verifica que backend está corriendo: http://localhost:5000/health
+    2. Abre consola F12 y revisa errores
+    3. Reinicia con Ctrl+C y npm run start:all
+
+PROBLEMA: No se crea cliente
+SOLUCIÓN:
+    1. Revisa que MongoDB está corriendo (Services.msc)
+    2. Abre consola F12 → Network → POST /api/clients
+    3. Verifica el error retornado
+
+PROBLEMA: No llegan emails
+SOLUCIÓN:
+    1. Verifica credenciales en .env
+    2. Comprueba que Gmail permite "Aplicaciones menos seguras"
+    3. Busca emails en bandeja de SPAM
+
+PROBLEMA: Horario no funciona
+SOLUCIÓN:
+    1. Verifica hora del sistema (esquina inferior derecha)
+    2. Ejecuta: iniciar-agente-automatico.bat
+    3. Lee los logs en la consola
+
+PROBLEMA: Puertos en uso
+SOLUCIÓN:
+    1. Abre cmd como administrador
+    2. netstat -ano | findstr :5000
+    3. Mata el proceso: taskkill /PID [numero] /F
+    4. O cambia PORT en .env
+
+
+═══════════════════════════════════════════════════════════════════
+🎉 ¡PROBADO Y LISTO!
+═══════════════════════════════════════════════════════════════════
+
+Si pasaste todas las pruebas, tu agente está:
+
+    ✅ Corriendo correctamente
+    ✅ Creando clientes
+    ✅ Enviando emails
+    ✅ Respetando horario
+    ✅ Mostrando estadísticas
+    ✅ Listo para producción
+
+¡Felicidades! 🎊
+
+═══════════════════════════════════════════════════════════════════

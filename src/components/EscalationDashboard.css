@@ -1,0 +1,253 @@
+.escalation-dashboard {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5em;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-header p {
+  color: #666;
+  font-size: 1.1em;
+  margin-top: 8px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+  font-size: 2.5em;
+  min-width: 60px;
+  text-align: center;
+}
+
+.stat-content h3 {
+  margin: 0;
+  font-size: 0.95em;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 2.2em;
+  font-weight: bold;
+  margin: 5px 0;
+  color: #333;
+}
+
+.stat-percent,
+.stat-subtitle {
+  font-size: 0.9em;
+  color: #999;
+  margin: 0;
+}
+
+.stat-card.success {
+  border-left: 4px solid #10b981;
+}
+
+.stat-card.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.stat-card.info {
+  border-left: 4px solid #3b82f6;
+}
+
+/* Action Section */
+.action-section {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.escalate-btn {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 14px 32px;
+  font-size: 1.1em;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.escalate-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.escalate-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.action-description {
+  margin: 10px 0 0 0;
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+
+/* Logs Section */
+.logs-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logs-section h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.logs-container {
+  overflow-x: auto;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.logs-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.logs-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9em;
+}
+
+.logs-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.logs-table tr:hover {
+  background: #f8f9fa;
+}
+
+.log-email_escalation {
+  border-left: 3px solid #3b82f6;
+}
+
+.log-event {
+  border-left: 3px solid #6b7280;
+}
+
+.no-logs {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* Info Section */
+.info-section {
+  background: #f0f4ff;
+  border-radius: 12px;
+  padding: 25px;
+  border-left: 4px solid #667eea;
+}
+
+.info-section h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.info-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-section li {
+  padding: 10px 0;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.info-section li:before {
+  content: '→ ';
+  color: #667eea;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+/* Loading */
+.dashboard-loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .escalation-dashboard {
+    padding: 15px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.8em;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-section {
+    padding: 20px;
+  }
+
+  .logs-section,
+  .info-section {
+    padding: 20px;
+  }
+}

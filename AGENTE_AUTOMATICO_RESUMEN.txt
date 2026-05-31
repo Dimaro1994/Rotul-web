@@ -1,0 +1,275 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║          🤖 AGENTE AUTOMÁTICO - HORARIO 8AM A 8PM             ║
+║                                                                ║
+║          Lunes a Viernes (Cerrado Sábado y Domingo)           ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+🚀 EMPEZAR AHORA
+═══════════════════════════════════════════════════════════════
+
+OPCIÓN 1: Ejecución Manual (Ahora Mismo)
+───────────────────────────────────────
+
+Haz doble clic en:
+   iniciar-agente-automatico.bat
+
+El agente verificará la hora y:
+✅ Si es L-V 8am-8pm → INICIA automáticamente
+❌ Si es L-V fuera de horario → ESPERA a las 8am
+❌ Si es Sábado/Domingo → DESCANSA
+
+
+OPCIÓN 2: Automatización Permanente (Task Scheduler)
+─────────────────────────────────────────────────────
+
+Lee: AGENTE_AUTOMATICO_GUIA.md
+
+Esto hará que:
+✅ Cada lunes-viernes a las 8:00 AM → Se inicia automáticamente
+✅ Cada lunes-viernes a las 8:00 PM → Se detiene automáticamente
+✅ Sábado y Domingo → El agente descansa
+
+
+═══════════════════════════════════════════════════════════════
+⏰ HORARIO DE TRABAJO
+═══════════════════════════════════════════════════════════════
+
+LUNES-VIERNES:
+  08:00 AM ─┐  ✅ ABIERTO
+  09:00 AM ─┤
+  10:00 AM ─┤
+  11:00 AM ─┤
+  12:00 PM ─┤
+  01:00 PM ─┤  Sistema corriendo
+  02:00 PM ─┤  Aceptando clientes
+  03:00 PM ─┤  Enviando emails
+  04:00 PM ─┤
+  05:00 PM ─┤
+  06:00 PM ─┤
+  07:00 PM ─┤
+  08:00 PM ─┘  ❌ CIERRA
+
+SÁBADO:  ❌ CERRADO
+DOMINGO: ❌ CERRADO
+
+
+═══════════════════════════════════════════════════════════════
+📋 FUNCIONES SEGÚN LA HORA
+═══════════════════════════════════════════════════════════════
+
+⏰ 07:59 AM (1 min antes)
+   Verificando horario...
+
+⏰ 08:00 AM (Exacto)
+   ✅ Inicia Backend (puerto 5000)
+   ✅ Inicia Bot Email (puerto 3001)
+   ✅ Inicia Frontend (puerto 5173)
+   📊 Dashboard disponible
+
+Durante el día L-V 8am-8pm:
+   ✅ Crear clientes
+   ✅ Enviar notificaciones por email
+   ✅ Actualizar estados
+   ✅ Ver estadísticas
+   ✅ Gestionar proyectos
+
+⏰ 19:59 PM (1 min antes de cerrar)
+   Monitor verificando...
+
+⏰ 20:00 PM (8pm - Cierre)
+   ⏹️ Detiene Backend
+   ⏹️ Detiene Bot Email
+   ⏹️ Detiene Frontend
+   💾 Datos guardados en MongoDB
+   ❌ Dashboard no disponible
+
+
+═══════════════════════════════════════════════════════════════
+🎯 QÚIÉNES AFECTA
+═══════════════════════════════════════════════════════════════
+
+✅ SI usas automatización (Task Scheduler):
+   • Tu PC inicia el agente solo a las 8am
+   • Se detiene solo a las 8pm
+   • Fines de semana: descanso
+
+✅ SI ejecutas manualmente (batch file):
+   • Tú inicias el agente cuando quieras
+   • El agente respeta el horario automáticamente
+   • Puedes detenerlo con Ctrl+C
+
+❌ Los CLIENTES:
+   • Pueden ver la web siempre (disponible 24/7)
+   • Los emails se envían solo durante 8am-8pm
+   • Si crean cliente fuera de horario: se guarda y se procesa al abrir
+
+❌ La BASE DE DATOS:
+   • Los datos NO se pierden
+   • MongoDB sigue guardando datos 24/7
+   • Solo el servicio se detiene
+
+
+═══════════════════════════════════════════════════════════════
+🔔 NOTIFICACIONES
+═══════════════════════════════════════════════════════════════
+
+Los emails se envían SOLO durante 8am-8pm L-V:
+
+✉️ Email confirmación → Al crear cliente
+✉️ Email de estado → Al cambiar de estado
+✉️ Email recordatorio → Plazo cercano
+
+Si un cliente se crea fuera de horario:
+   ✅ Se guarda en la BD
+   ⏳ Recibe email cuando abra el agente
+
+Ejemplo:
+   Sábado 10pm: Cliente se crea → Se guarda
+   Lunes 8am: Agente abre → Email enviado
+
+
+═══════════════════════════════════════════════════════════════
+💻 ACCESO A LA WEB
+═══════════════════════════════════════════════════════════════
+
+DURANTE HORARIO (8am-8pm L-V):
+   ✅ http://localhost:5173              Funciona
+   ✅ http://localhost:5173?admin=...    Funciona
+   ✅ http://localhost:5000/api/...      Funciona
+   ✅ Crear clientes                     Funciona
+   ✅ Emails se envían                   Funciona
+
+FUERA DE HORARIO:
+   ❌ http://localhost:5173              No funciona
+   ❌ http://localhost:5000/api          No funciona
+   ✅ Datos en MongoDB                   Están seguros
+   ✅ Base de datos                      Sigue funcionando
+
+
+═══════════════════════════════════════════════════════════════
+🔧 CÓMO FUNCIONA TÉCNICAMENTE
+═══════════════════════════════════════════════════════════════
+
+1. Ejecutas: iniciar-agente-automatico.bat
+
+2. El script verifica CADA MINUTO:
+   ¿Es lunes a viernes? → SÍ
+   ¿Es entre 8am y 8pm? → SÍ
+   ¿Está corriendo? → NO
+   → INICIA los servicios
+
+3. Luego verifica cada minuto:
+   ¿Es lunes a viernes? → NO (es sábado/domingo)
+   → DETIENE los servicios
+
+4. O:
+   ¿Es lunes a viernes? → SÍ
+   ¿Es entre 8am y 8pm? → NO (es 8:01pm)
+   → DETIENE los servicios
+
+
+═══════════════════════════════════════════════════════════════
+⚙️ PERSONALIZAR HORARIO
+═══════════════════════════════════════════════════════════════
+
+Si quieres cambiar de 8am-8pm a otro horario:
+
+1. Abre: agenteAutomatico.js
+
+2. Busca esta línea (aprox línea 30):
+   if (hour >= 8 && hour < 20) {
+
+3. Cambia los números:
+   • 8 = 8am (cambiar por la hora que quieras)
+   • 20 = 8pm (cambiar por la hora que quieras)
+
+Ejemplos:
+   De 7am a 9pm:   if (hour >= 7 && hour < 21)
+   De 9am a 6pm:   if (hour >= 9 && hour < 18)
+   De 8am a 10pm:  if (hour >= 8 && hour < 22)
+
+
+═══════════════════════════════════════════════════════════════
+🚨 SOLUCIONAR PROBLEMAS
+═══════════════════════════════════════════════════════════════
+
+❌ No inicia a las 8am
+   → Windows Task Scheduler no está corriendo
+   → Verifica Services.msc
+
+❌ Se detiene a media mañana
+   → Hay un error, revisa la consola
+   → Intenta reiniciar MongoDB
+
+❌ Los datos desaparecieron
+   → Los datos no desaparecen, están en MongoDB
+   → Solo la interfaz se apaga
+
+❌ Quiero que corra 24/7
+   → Usa: npm run start:all
+   → O configura horario: 00:00 a 23:59
+
+
+═══════════════════════════════════════════════════════════════
+📱 ALERTAS
+═══════════════════════════════════════════════════════════════
+
+La consola mostrará:
+
+✅ "ABIERTO - Sistema en funcionamiento"
+   → Todo normal, agente trabajando
+
+❌ "CERRADO - Fuera de horario"
+   → Es fin de semana o fuera de horario
+
+🔄 "Iniciando servicios..."
+   → Agente se está iniciando
+
+⏹️ "Deteniendo servicios..."
+   → Agente se está apagando
+
+
+═══════════════════════════════════════════════════════════════
+📚 DOCUMENTACIÓN
+═══════════════════════════════════════════════════════════════
+
+Lee estos archivos para más detalles:
+
+1. AGENTE_AUTOMATICO_GUIA.md
+   → Configuración completa en Windows Task Scheduler
+
+2. agenteAutomatico.js
+   → Código del monitor de horario
+
+3. iniciar-agente-automatico.bat
+   → Batch file para ejecutar
+
+
+═══════════════════════════════════════════════════════════════
+🎉 ¡LISTO!
+═══════════════════════════════════════════════════════════════
+
+PARA EMPEZAR AHORA:
+
+   1. Haz doble clic en:
+      iniciar-agente-automatico.bat
+
+   2. Verifica el horario:
+      ✅ Lunes-viernes 8am-8pm → Se inicia
+      ❌ Sábado/domingo → Se detiene
+
+   3. Accede al dashboard:
+      http://localhost:5173?admin=dashboard
+
+
+PARA AUTOMATIZARLO PERMANENTEMENTE:
+
+   1. Lee: AGENTE_AUTOMATICO_GUIA.md
+   2. Configura Windows Task Scheduler
+   3. Listo - Tu agente trabajará solo
+
+
+═══════════════════════════════════════════════════════════════

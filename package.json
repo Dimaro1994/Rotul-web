@@ -8,15 +8,34 @@
     "build": "vite build",
     "preview": "vite preview",
     "backend": "node server.js",
-    "dev:full": "concurrently \"npm run backend\" \"npm run dev\""
+    "email-bot": "node emailBot.js",
+    "search-agent": "node searchAgentCLI.js",
+    "escalation-agent": "node escalationAgentCLI.js escalate",
+    "escalation-stats": "node escalationAgentCLI.js stats",
+    "escalation-check": "node escalationAgentCLI.js check-responses",
+    "dev:full": "concurrently \"npm run backend\" \"npm run dev\"",
+    "dev:email": "concurrently \"npm run email-bot\" \"npm run dev\"",
+    "start:all": "concurrently \"npm run backend\" \"npm run email-bot\" \"npm run dev\"",
+    "admin": "npm run start:all",
+    "client-manager": "npm run start:all"
   },
   "dependencies": {
+    "axios": "^1.6.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "framer-motion": "^11.11.17",
+    "imap": "^0.8.19",
+    "mailparser": "^3.6.5",
+    "mongoose": "^9.6.2",
+    "nodemailer": "^6.9.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
     "vite": "^5.4.10"
   }
 }
