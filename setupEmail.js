@@ -14,16 +14,26 @@ function question(query) {
 
 async function setup() {
   console.log('\n🤖 Email Bot - Setup Interactivo\n');
+  console.log('ℹ️  Para Roundcube (Disbit) usa:\n');
+  console.log('   SMTP Host: blue.disbit.com');
+  console.log('   SMTP Puerto: 587');
+  console.log('   IMAP Host: blue.disbit.com');
+  console.log('   IMAP Puerto: 993\n');
 
-  const email = await question('📧 Email (info@rotulweb): ');
-  const password = await question('🔑 Contraseña de aplicación (16 caracteres): ');
+  const email = await question('📧 Email: ');
+  const password = await question('🔑 Contraseña: ');
+  const smtpHost = await question('📤 SMTP Host [blue.disbit.com]: ') || 'blue.disbit.com';
+  const smtpPort = await question('📤 SMTP Puerto [587]: ') || '587';
+  const imapHost = await question('📥 IMAP Host [blue.disbit.com]: ') || 'blue.disbit.com';
+  const imapPort = await question('📥 IMAP Puerto [993]: ') || '993';
 
   console.log('\n⏳ Probando conexión...\n');
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
+    host: smtpHost,
+    port: parseInt(smtpPort),
     secure: false,
+    requireTLS: true,
     auth: {
       user: email,
       pass: password,
@@ -36,8 +46,7 @@ async function setup() {
       console.log('\n⚠️  Verifica:');
       console.log('1. Email correcto: ' + email);
       console.log('2. Contraseña sin espacios');
-      console.log('3. 2FA habilitado en Google');
-      console.log('4. Contraseña de aplicación generada correctamente\n');
+      console.log('3. Host y puerto correctos\n');
       rl.close();
       return;
     }
@@ -47,8 +56,8 @@ async function setup() {
     const imap = new Imap({
       user: email,
       password: password,
-      host: 'imap.gmail.com',
-      port: 993,
+      host: imapHost,
+      port: parseInt(imapPort),
       tls: true,
     });
 
@@ -58,17 +67,17 @@ async function setup() {
       // Guardar configuración
       const envContent = `EMAIL_USER=${email}
 EMAIL_PASSWORD=${password}
-EMAIL_HOST=imap.gmail.com
-EMAIL_PORT=993
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
+EMAIL_HOST=${imapHost}
+EMAIL_PORT=${imapPort}
+SMTP_HOST=${smtpHost}
+SMTP_PORT=${smtpPort}
 SMTP_SECURE=false
 BOT_PORT=3001
 `;
 
       fs.writeFileSync('.env', envContent);
-      console.log('✅ .env actualizado\n');
-      console.log('🎉 ¡TODO LISTO! Ahora ejecuta:\n');
+      console.log('✅ .env actualizado correctamente\n');
+      console.log('🎉 ¡TODO LISTO! Ahora puedes ejecutar:\n');
       console.log('   npm run email-bot\n');
 
       imap.end();
@@ -77,6 +86,10 @@ BOT_PORT=3001
 
     imap.on('error', (err) => {
       console.log('❌ Error IMAP:', err.message);
+      console.log('\n⚠️  Verifica:');
+      console.log('1. Email correcto: ' + email);
+      console.log('2. Contraseña sin espacios');
+      console.log('3. Host y puerto correctos\n');
       rl.close();
     });
 

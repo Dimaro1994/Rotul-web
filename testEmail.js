@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
   secure: false,
+  requireTLS: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
@@ -43,12 +44,11 @@ transporter.verify((error, success) => {
 
   imap.on('error', (err) => {
     console.log('❌ IMAP ERROR:', err.message);
-    console.log('\n⚠️  Google bloqueó la conexión (restricción de seguridad)');
-    console.log('Necesitas generar una CONTRASEÑA DE APLICACIÓN:\n');
-    console.log('1. Ve a: https://myaccount.google.com/apppasswords');
-    console.log('2. Selecciona "Mail" y "Windows"');
-    console.log('3. Copia la contraseña de 16 caracteres');
-    console.log('4. Actualiza el .env con esa contraseña\n');
+    console.log('\n⚠️  Verifica:');
+    console.log('1. Email correcto: ' + process.env.EMAIL_USER);
+    console.log('2. Contraseña sin espacios ni caracteres especiales');
+    console.log('3. Host correcto: ' + process.env.EMAIL_HOST);
+    console.log('4. Puerto correcto: ' + process.env.EMAIL_PORT + '\n');
     process.exit(1);
   });
 
