@@ -2,9 +2,9 @@
 
 import axios from 'axios';
 import readline from 'readline';
-import fs from 'fs';
+import { getApiBaseUrl } from './config/agentConfig.js';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = `${getApiBaseUrl()}/api`;
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -102,7 +102,7 @@ async function showMenu() {
 
 async function main() {
   console.log('\n🚀 Search Agent CLI');
-  console.log('Conectando a http://localhost:3001...\n');
+  console.log(`Conectando a ${getApiBaseUrl()}...\n`);
 
   try {
     await axios.get(`${API_URL}/leads`);

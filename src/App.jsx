@@ -24,46 +24,91 @@ const auditItems = [
 
 const portfolioItems = [
   {
+    id: "clinica-dental",
     name: "Web corporativa para clínica dental",
-    result: "+62% más solicitudes en solo 90 días",
-    before: "Web sin contactos y mensaje poco claro",
-    after: "+62% más solicitudes en 90 días con una landing optimizada",
-    detailTitle: "Qué hicimos para desbloquear la conversión",
+    metric: { value: 62, prefix: "+", suffix: "%", label: "solicitudes" },
+    before: {
+      title: "Web corporativa para clínica dental",
+      eyebrow: "Antes",
+      result: "0 recorrido claro",
+      image: "/assets/case-dental-before.svg",
+      imageAlt: "Captura recreada de la web antigua de una clínica dental",
+      summary: "La web parecía correcta, pero no llevaba al usuario a pedir cita.",
+      points: ["Mensaje confuso", "Sin CTA visible", "Formulario oculto", "Poco contenido"],
+    },
+    after: {
+      title: "Landing para captar pacientes",
+      eyebrow: "Después",
+      result: "+62% solicitudes",
+      image: "/assets/case-dental-after.svg",
+      imageAlt: "Captura recreada de la nueva landing de una clínica dental",
+      summary: "Creamos una landing con promesa clara, prueba social y contacto inmediato.",
+      points: ["CTA visible", "Mensaje claro", "Formulario optimizado", "Más confianza"],
+    },
+    detailTitle: "Cómo desbloqueamos la conversión",
     detailPoints: [
       "Reordenamos la hero para que el servicio, el beneficio y el CTA se entendieran en segundos.",
       "Quitamos fricción en el contacto con un formulario corto y acceso visible a WhatsApp.",
       "Añadimos prueba social y una propuesta de valor más concreta para elevar confianza.",
     ],
-    image: "/assets/portfolio-dental.svg",
-    imageAlt: "Vista previa de proyecto web para clínica dental",
   },
   {
+    id: "decoracion",
     name: "Tienda online del sector decoración",
-    result: "+41% más ventas en 3 meses",
-    before: "Catálogo confuso y recorrido de compra con fricción",
-    after: "+41% más ventas en 3 meses con una UX de compra simplificada",
+    metric: { value: 41, prefix: "+", suffix: "%", label: "ventas" },
+    before: {
+      title: "Ecommerce de decoración",
+      eyebrow: "Antes",
+      result: "Compra con fricción",
+      image: "/assets/case-deco-before.svg",
+      imageAlt: "Captura recreada de un ecommerce antiguo de decoración",
+      summary: "El catálogo tenía producto, pero el recorrido hacia la compra se sentía pesado.",
+      points: ["Categorías confusas", "Fichas sin jerarquía", "CTA débil", "Checkout largo"],
+    },
+    after: {
+      title: "Ecommerce optimizado",
+      eyebrow: "Después",
+      result: "+41% ventas",
+      image: "/assets/case-deco-after.svg",
+      imageAlt: "Captura recreada de un ecommerce optimizado de decoración",
+      summary: "Simplificamos búsqueda, fichas y compra para que el usuario avanzara sin dudas.",
+      points: ["Filtros claros", "Producto protagonista", "CTA persistente", "Compra más corta"],
+    },
     detailTitle: "Dónde estaba el cuello de botella",
     detailPoints: [
       "Simplificamos categorias y filtros para que el usuario encontrara producto sin perderse.",
       "Rehicimos fichas y CTAs para reducir dudas antes de comprar.",
       "Limpiamos el recorrido de compra para recortar pasos y mejorar la conversión final.",
     ],
-    image: "/assets/portfolio-decoracion.svg",
-    imageAlt: "Vista previa de ecommerce de decoración",
   },
   {
-    name: "Cómo conseguimos 3x más clientes para un negocio local",
-    result: "3x más leads cualificados",
-    before: "Sin estrategia digital",
-    after: "3x más leads cualificados con campañas y página orientada a conversión",
+    id: "negocio-local",
+    name: "Negocio local de servicios",
+    metric: { value: 3, prefix: "", suffix: "x", label: "leads" },
+    before: {
+      title: "Web local sin estrategia",
+      eyebrow: "Antes",
+      result: "Leads impredecibles",
+      image: "/assets/case-local-before.svg",
+      imageAlt: "Captura recreada de una web antigua para negocio local",
+      summary: "La web funcionaba como folleto, no como una herramienta para conseguir contactos.",
+      points: ["Oferta genérica", "Sin prueba social", "Anuncios desconectados", "Contacto al final"],
+    },
+    after: {
+      title: "Landing local de conversión",
+      eyebrow: "Después",
+      result: "3x leads cualificados",
+      image: "/assets/case-local-after.svg",
+      imageAlt: "Captura recreada de una landing optimizada para negocio local",
+      summary: "Alineamos oferta, anuncios y landing para convertir visitas en solicitudes reales.",
+      points: ["Oferta específica", "Reseñas visibles", "Mensaje alineado", "Contacto inmediato"],
+    },
     detailTitle: "Cómo se construyó el resultado",
     detailPoints: [
       "Definimos una oferta más clara para que el tráfico entendiera rápido el valor.",
       "Creamos una landing enfocada a contacto con una estructura pensada para cerrar leads.",
       "Alineamos anuncios, mensaje y captación para que todo empujara al mismo objetivo.",
     ],
-    image: "/assets/portfolio-local.svg",
-    imageAlt: "Vista previa de landing para negocio local",
   },
 ];
 
@@ -252,9 +297,213 @@ function AnimatedMetric({ value, prefix = "", suffix = "", label }) {
   );
 }
 
+function AnimatedPortfolioMetric({ metric, active }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      setDisplayValue(0);
+      return undefined;
+    }
+
+    let frameId = 0;
+    let startTime = 0;
+    const duration = 900;
+
+    const update = (timestamp) => {
+      if (!startTime) {
+        startTime = timestamp;
+      }
+
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const eased = 1 - (1 - progress) ** 3;
+      setDisplayValue(Math.round(metric.value * eased));
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(update);
+      }
+    };
+
+    frameId = window.requestAnimationFrame(update);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [active, metric.value]);
+
+  return (
+    <span className="portfolio-metric">
+      {metric.prefix}
+      {displayValue}
+      {metric.suffix} {metric.label}
+    </span>
+  );
+}
+
+function PortfolioCard({ item, onOpen }) {
+  const [activeView, setActiveView] = useState("before");
+  const content = activeView === "before" ? item.before : item.after;
+  const isAfter = activeView === "after";
+
+  return (
+    <motion.article
+      className={`card portfolio-card portfolio-card-${activeView}`}
+      variants={staggerItem}
+      layout
+    >
+      <div className="portfolio-mockup">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={content.image}
+            src={content.image}
+            alt={content.imageAlt}
+            initial={{ opacity: 0, scale: 0.985 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.015 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          />
+        </AnimatePresence>
+      </div>
+
+      <div className="portfolio-card-head">
+        <div>
+          <span className={`compare-pill compare-pill-${activeView}`}>{content.eyebrow}</span>
+          <h3>{content.title}</h3>
+          <p className="result">
+            {isAfter ? (
+              <AnimatedPortfolioMetric metric={item.metric} active={isAfter} />
+            ) : (
+              content.result
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="portfolio-switch" role="group" aria-label={`Comparar ${item.name}`}>
+        <button
+          type="button"
+          className={activeView === "before" ? "is-active" : ""}
+          aria-pressed={activeView === "before"}
+          onClick={() => setActiveView("before")}
+        >
+          Antes
+        </button>
+        <button
+          type="button"
+          className={activeView === "after" ? "is-active" : ""}
+          aria-pressed={activeView === "after"}
+          onClick={() => setActiveView("after")}
+        >
+          Después
+        </button>
+        <i aria-hidden="true" />
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeView}
+          className="portfolio-dynamic"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <p>{content.summary}</p>
+          <div className="portfolio-points">
+            {content.points.map((point) => (
+              <span key={point}>{point}</span>
+            ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="portfolio-actions">
+        <button
+          type="button"
+          className="btn btn-secondary portfolio-case-button"
+          onClick={() => onOpen(item)}
+        >
+          Ver resultado completo
+        </button>
+      </div>
+    </motion.article>
+  );
+}
+
+function PortfolioModal({ item, onClose }) {
+  useEffect(() => {
+    if (!item) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.body.classList.add("modal-open");
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.classList.remove("modal-open");
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [item, onClose]);
+
+  return (
+    <motion.div
+      className="portfolio-modal-backdrop"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
+      <motion.article
+        className="portfolio-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="portfolio-modal-title"
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 18, scale: 0.98 }}
+        transition={{ duration: 0.28, ease: "easeOut" }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="portfolio-modal-close"
+          aria-label="Cerrar caso completo"
+          onClick={onClose}
+        >
+          Cerrar
+        </button>
+        <div className="portfolio-modal-media">
+          <img src={item.after.image} alt={item.after.imageAlt} />
+        </div>
+        <div className="portfolio-modal-copy">
+          <p className="section-kicker">Caso completo</p>
+          <h2 id="portfolio-modal-title">{item.name}</h2>
+          <p className="portfolio-modal-result">{item.after.result}</p>
+          <p>{item.detailTitle}</p>
+          <div className="portfolio-detail-list">
+            {item.detailPoints.map((point) => (
+              <p className="portfolio-detail-item" key={point}>
+                {point}
+              </p>
+            ))}
+          </div>
+          <a href="#contacto" className="btn btn-primary" onClick={onClose}>
+            Quiero una auditoría parecida
+          </a>
+        </div>
+      </motion.article>
+    </motion.div>
+  );
+}
+
 function App() {
   const testimonialLoop = [...testimonials, ...testimonials];
-  const [openPortfolio, setOpenPortfolio] = useState(null);
+  const [selectedPortfolio, setSelectedPortfolio] = useState(null);
 
   return (
     <>
@@ -376,6 +625,10 @@ function App() {
             <p className="section-intro section-intro-strong">
               No hacemos webs bonitas. Hacemos webs que generan resultados.
             </p>
+            <p className="section-intro">
+              Haz clic en "Antes" y "Después" para ver cómo cambia una web
+              cuando se diseña para convertir.
+            </p>
           </div>
 
           <motion.div
@@ -386,78 +639,11 @@ function App() {
             variants={staggerContainer}
           >
             {portfolioItems.map((item) => (
-              <motion.article
-                className="card portfolio-card"
-                key={item.name}
-                variants={staggerItem}
-              >
-                <div className="portfolio-mockup">
-                  <img src={item.image} alt={item.imageAlt} />
-                </div>
-                <div className="portfolio-card-head">
-                  <div>
-                    <h3>{item.name}</h3>
-                    <p className="result">{item.result}</p>
-                  </div>
-                  <div className="portfolio-toggle" aria-hidden="true">
-                    <span>ANTES</span>
-                    <span>DESPUÉS</span>
-                    <i />
-                  </div>
-                </div>
-                <div className="portfolio-outcome">
-                  <div className="portfolio-outcome-block portfolio-outcome-block-before">
-                    <span className="compare-before">ANTES</span>
-                    <p>{item.before}</p>
-                  </div>
-                  <div className="portfolio-shift" aria-hidden="true">
-                    <span />
-                  </div>
-                  <div className="portfolio-outcome-block portfolio-outcome-block-after">
-                    <span className="compare-after">DESPUÉS</span>
-                    <p>{item.after}</p>
-                  </div>
-                </div>
-                <div className="portfolio-actions">
-                  <button
-                    type="button"
-                    className="text-link portfolio-link"
-                    aria-expanded={openPortfolio === item.name}
-                    onClick={() =>
-                      setOpenPortfolio((current) =>
-                        current === item.name ? null : item.name,
-                      )
-                    }
-                  >
-                    {openPortfolio === item.name
-                      ? "Ocultar resultado completo"
-                      : "Ver resultado completo"}
-                  </button>
-                </div>
-                <AnimatePresence initial={false}>
-                  {openPortfolio === item.name ? (
-                    <motion.div
-                      className="portfolio-detail"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.28, ease: "easeOut" }}
-                    >
-                      <p className="portfolio-detail-title">{item.detailTitle}</p>
-                      <div className="portfolio-detail-list">
-                        {item.detailPoints.map((point) => (
-                          <p className="portfolio-detail-item" key={point}>
-                            {point}
-                          </p>
-                        ))}
-                      </div>
-                      <a href="#contacto" className="btn btn-secondary portfolio-detail-cta">
-                        Quiero una auditoría parecida
-                      </a>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
-              </motion.article>
+              <PortfolioCard
+                item={item}
+                key={item.id}
+                onOpen={setSelectedPortfolio}
+              />
             ))}
           </motion.div>
         </motion.section>
@@ -750,6 +936,15 @@ function App() {
       <a className="mobile-sticky-cta" href="#contacto">
         Auditoria gratuita
       </a>
+
+      <AnimatePresence>
+        {selectedPortfolio ? (
+          <PortfolioModal
+            item={selectedPortfolio}
+            onClose={() => setSelectedPortfolio(null)}
+          />
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }

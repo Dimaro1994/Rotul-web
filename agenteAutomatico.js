@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { spawn } from 'child_process';
-import cron from 'node-cron';
 import dotenv from 'dotenv';
+import { isWithinWorkingHours } from './config/agentSchedule.js';
 
 dotenv.config();
 
@@ -12,23 +12,6 @@ let runningProcesses = {
   frontend: null,
 };
 
-function isWithinWorkingHours() {
-  const now = new Date();
-  const day = now.getDay(); // 0 = domingo, 1 = lunes, ..., 6 = sábado
-  const hour = now.getHours();
-
-  // Si es sábado (6) o domingo (0), no trabajar
-  if (day === 0 || day === 6) {
-    return false;
-  }
-
-  // Si es entre 8am (08:00) y 8pm (20:00)
-  if (hour >= 8 && hour < 20) {
-    return true;
-  }
-
-  return false;
-}
 
 function startServices() {
   console.log('\n📅 Verificando horario de trabajo...');
@@ -41,7 +24,7 @@ function startServices() {
     if (day === 0 || day === 6) {
       console.log('❌ Es fin de semana - Agente en descanso');
     } else {
-      console.log(`❌ Fuera de horario (${hour}:00) - Horario: 8am a 8pm`);
+      console.log(`❌ Fuera de horario (${hour}:00) - Horario: lunes a viernes de 8:00 a 19:00`);
     }
     return false;
   }
@@ -100,7 +83,7 @@ function printSchedule() {
 ╚════════════════════════════════════════════════════════════╝
 
 📅 HORARIO DE TRABAJO:
-   Lunes a Viernes: 8:00 AM - 8:00 PM
+   Lunes a Viernes: 8:00 AM - 7:00 PM
    Sábado y Domingo: CERRADO
 
 ⏱️  PRÓXIMAS ACCIONES:

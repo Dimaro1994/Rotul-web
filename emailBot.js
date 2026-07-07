@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import nodemailer from 'nodemailer';
 import Imap from 'imap';
 import { simpleParser } from 'mailparser';
 import express from 'express';
@@ -9,6 +8,7 @@ import Email from './models/Email.js';
 import { generateSmartReply, categorizeMail } from './services/emailAI.js';
 import { notifyNewEmail } from './services/whatsappNotifier.js';
 import { connectDB } from './config/database.js';
+import { sendEmail } from './services/emailService.js';
 
 dotenv.config();
 
@@ -23,20 +23,6 @@ try {
   console.warn('⚠️ MongoDB no disponible. El bot funcionará sin persistencia en BD.');
 }
 
-// Configuración SMTP
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
 // Configuración IMAP
 const imap = new Imap({
   user: process.env.EMAIL_USER,
@@ -45,24 +31,6 @@ const imap = new Imap({
   port: process.env.EMAIL_PORT,
   tls: true,
 });
-
-// Enviar correo
-async function sendEmail(to, subject, text, html = null) {
-  try {
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: to,
-      subject: subject,
-      text: text,
-      html: html || text,
-    });
-    console.log('✉️ Correo enviado a:', to);
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error('❌ Error SMTP:', error.message);
-    return { success: false, error: error.message };
-  }
-}
 
 // Procesar correo recibido
 function processEmail(msg) {
@@ -113,7 +81,7 @@ function processEmail(msg) {
       const aiResult = await generateSmartReply(emailData);
 
       let responseText = aiResult.response;
-      if (!aiResult.success) {
+      if (!aiResult.success || !responseText) {
         console.log('⚠️ IA falló, usando respuesta genérica');
         responseText = `Hemos recibido tu correo: "${emailData.subject}". Nos pondremos en contacto pronto.\n\nWhatsApp: +34 633 833 407`;
       }

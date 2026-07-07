@@ -1,17 +1,8 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import { createEmailTransporter } from './services/emailService.js';
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  tls: { rejectUnauthorized: false }
-});
+const transporter = createEmailTransporter();
 
 console.log('🧪 Probando SMTP...\n');
 transporter.verify((error, success) => {

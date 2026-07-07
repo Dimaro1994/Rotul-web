@@ -1,18 +1,10 @@
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import { createEmailTransporter } from './services/emailService.js';
 
 dotenv.config();
 
 // Configuración SMTP
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
+const transporter = createEmailTransporter();
 
 // Notificación cuando se crea un nuevo cliente
 export async function notifyNewClient(client) {

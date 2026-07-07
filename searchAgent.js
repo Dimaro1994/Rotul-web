@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import axios from 'axios';
-import { sendEmail } from './emailBot.js';
+import { sendEmail } from './services/emailService.js';
 import fs from 'fs';
 
 dotenv.config();

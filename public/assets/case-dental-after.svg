@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title">
+  <title id="title">Landing dental nueva</title>
+  <rect width="960" height="620" fill="#eaf7f0"/>
+  <rect x="44" y="42" width="872" height="536" rx="18" fill="#ffffff" stroke="#b8e4ca"/>
+  <rect x="44" y="42" width="872" height="44" rx="18" fill="#102019"/>
+  <circle cx="72" cy="64" r="6" fill="#ff7d7d"/><circle cx="94" cy="64" r="6" fill="#ffd166"/><circle cx="116" cy="64" r="6" fill="#50d890"/>
+  <rect x="84" y="122" width="150" height="30" rx="15" fill="#dff7e8"/>
+  <rect x="680" y="122" width="150" height="36" rx="18" fill="#1b7f4b"/>
+  <rect x="86" y="206" width="340" height="46" rx="6" fill="#111b16"/>
+  <rect x="86" y="268" width="308" height="18" rx="9" fill="#638270"/>
+  <rect x="86" y="302" width="270" height="18" rx="9" fill="#89a897"/>
+  <rect x="86" y="354" width="172" height="44" rx="22" fill="#50d890"/>
+  <rect x="278" y="354" width="146" height="44" rx="22" fill="#edf7f1" stroke="#b8e4ca"/>
+  <rect x="512" y="142" width="320" height="286" rx="14" fill="#f1fbf5" stroke="#ccebd7"/>
+  <rect x="544" y="174" width="256" height="70" rx="10" fill="#d5f4df"/>
+  <rect x="544" y="266" width="118" height="96" rx="10" fill="#ffffff" stroke="#ccebd7"/>
+  <rect x="682" y="266" width="118" height="96" rx="10" fill="#ffffff" stroke="#ccebd7"/>
+  <rect x="86" y="478" width="174" height="52" rx="10" fill="#111b16"/>
+  <rect x="282" y="478" width="174" height="52" rx="10" fill="#eaf7f0"/>
+  <rect x="478" y="478" width="174" height="52" rx="10" fill="#eaf7f0"/>
+  <rect x="112" y="496" width="74" height="16" rx="8" fill="#50d890"/>
+  <rect x="306" y="496" width="96" height="16" rx="8" fill="#62a678"/>
+  <rect x="502" y="496" width="94" height="16" rx="8" fill="#62a678"/>
+</svg>

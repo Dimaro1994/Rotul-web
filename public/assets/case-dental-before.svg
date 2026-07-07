@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title">
+  <title id="title">Web dental antigua</title>
+  <rect width="960" height="620" fill="#f3f0ea"/>
+  <rect x="44" y="42" width="872" height="536" rx="18" fill="#fffaf2" stroke="#d8d0c3"/>
+  <rect x="44" y="42" width="872" height="44" rx="18" fill="#d9d2c7"/>
+  <circle cx="72" cy="64" r="6" fill="#b95a55"/><circle cx="94" cy="64" r="6" fill="#c99a4a"/><circle cx="116" cy="64" r="6" fill="#7b9a6b"/>
+  <rect x="86" y="128" width="170" height="34" rx="3" fill="#9d958b"/>
+  <rect x="590" y="134" width="76" height="10" rx="5" fill="#bfb7ad"/>
+  <rect x="690" y="134" width="76" height="10" rx="5" fill="#bfb7ad"/>
+  <rect x="790" y="134" width="70" height="10" rx="5" fill="#bfb7ad"/>
+  <rect x="86" y="218" width="360" height="26" rx="4" fill="#6e665d"/>
+  <rect x="86" y="258" width="300" height="16" rx="8" fill="#b8afa4"/>
+  <rect x="86" y="288" width="330" height="16" rx="8" fill="#c8c0b6"/>
+  <rect x="86" y="318" width="250" height="16" rx="8" fill="#c8c0b6"/>
+  <rect x="86" y="382" width="128" height="34" rx="4" fill="#b7aea4"/>
+  <rect x="526" y="178" width="294" height="216" rx="6" fill="#dad3c9"/>
+  <rect x="554" y="204" width="238" height="28" rx="4" fill="#bbb1a6"/>
+  <rect x="554" y="256" width="198" height="12" rx="6" fill="#f7f1e8"/>
+  <rect x="554" y="284" width="218" height="12" rx="6" fill="#f7f1e8"/>
+  <rect x="554" y="312" width="148" height="12" rx="6" fill="#f7f1e8"/>
+  <rect x="86" y="478" width="230" height="18" rx="9" fill="#b8afa4"/>
+  <rect x="86" y="512" width="700" height="12" rx="6" fill="#d8d0c6"/>
+</svg>

@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const configs = [
   { host: 'blue.disbit.com', port: 587, name: 'blue.disbit:587' },
@@ -15,8 +17,8 @@ async function testConfig(config) {
       port: config.port,
       secure: config.port === 465,
       auth: {
-        user: 'info@rotulweb.com',
-        pass: '@Dimaro030',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
       },
       tls: { rejectUnauthorized: false }
     });

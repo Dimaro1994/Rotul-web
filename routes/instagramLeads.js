@@ -21,22 +21,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Obtener leads principales (top score)
+router.get('/top/leads', async (req, res) => {
+  try {
+    const leads = await instagramLeadAgent.getTopLeads(10);
+    res.json(leads);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Búsqueda por username
+router.get('/search/:username', async (req, res) => {
+  try {
+    const leads = await InstagramLead.find({
+      instagramUsername: { $regex: req.params.username, $options: 'i' }
+    });
+    res.json(leads);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Obtener un lead específico
 router.get('/:id', async (req, res) => {
   try {
     const lead = await InstagramLead.findById(req.params.id);
     if (!lead) return res.status(404).json({ error: 'Lead no encontrado' });
     res.json(lead);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Obtener leads principales (top score)
-router.get('/top/leads', async (req, res) => {
-  try {
-    const leads = await instagramLeadAgent.getTopLeads(10);
-    res.json(leads);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -154,18 +166,6 @@ router.delete('/:id', async (req, res) => {
   try {
     await InstagramLead.findByIdAndDelete(req.params.id);
     res.json({ message: 'Lead eliminado' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Búsqueda por username
-router.get('/search/:username', async (req, res) => {
-  try {
-    const leads = await InstagramLead.find({
-      instagramUsername: { $regex: req.params.username, $options: 'i' }
-    });
-    res.json(leads);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

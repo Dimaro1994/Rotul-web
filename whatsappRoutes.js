@@ -1,7 +1,7 @@
 // Rutas para WhatsApp
 import express from 'express';
 import crypto from 'crypto';
-import { sendMessage, receiveMessage } from '../whatsappController.js';
+import { sendMessage, receiveMessage } from './whatsappController.js';
 
 const router = express.Router();
 

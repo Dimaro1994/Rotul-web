@@ -22,21 +22,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Obtener email específico
-router.get('/:id', async (req, res) => {
-  try {
-    const email = await Email.findById(req.params.id);
-    if (!email) return res.status(404).json({ error: 'Email no encontrado' });
-
-    email.read = true;
-    await email.save();
-
-    res.json(email);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Obtener estadísticas
 router.get('/stats/summary', async (req, res) => {
   try {
@@ -68,6 +53,21 @@ router.get('/stats/summary', async (req, res) => {
         byCategory.map((c) => [c._id, c.count])
       ),
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obtener email específico
+router.get('/:id', async (req, res) => {
+  try {
+    const email = await Email.findById(req.params.id);
+    if (!email) return res.status(404).json({ error: 'Email no encontrado' });
+
+    email.read = true;
+    await email.save();
+
+    res.json(email);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

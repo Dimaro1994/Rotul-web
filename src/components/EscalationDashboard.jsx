@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './EscalationDashboard.css';
 
 export default function EscalationDashboard() {
+  const businessPhone = import.meta.env.VITE_BUSINESS_PHONE || 'Configurar BUSINESS_PHONE';
   const [stats, setStats] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -168,7 +169,7 @@ export default function EscalationDashboard() {
         <ul>
           <li>✅ Los clientes reciben email con botones de WhatsApp y Llamada</li>
           <li>⏰ Se escalan después de 24 horas sin respuesta</li>
-          <li>📱 Contacto directo: {process.env.REACT_APP_BUSINESS_PHONE || 'Configurar BUSINESS_PHONE'}</li>
+          <li>📱 Contacto directo: {businessPhone}</li>
           <li>🔄 Las estadísticas se actualizan automáticamente cada 30 segundos</li>
         </ul>
       </div>

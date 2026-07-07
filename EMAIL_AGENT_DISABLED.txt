@@ -1,0 +1,2 @@
+El agente de email ha sido desactivado en este proyecto.
+No se usa ni se arranca desde los scripts principales.
