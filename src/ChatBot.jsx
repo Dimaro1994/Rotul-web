@@ -1,218 +1,269 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { LEAD_CAPTURE_CONFIG } from "./leadCaptureConfig";
 
-const BOT_STEPS = [
-  {
-    id: "welcome",
-    message: "👋 ¡Hola! Soy el asistente de Rotulweb. ¿En qué puedo ayudarte hoy?",
-    options: [
-      { label: "Quiero una web nueva", next: "web" },
-      { label: "Mejorar mi web actual", next: "mejora" },
-      { label: "Publicidad y más clientes", next: "ads" },
-      { label: "Saber el precio", next: "precio" },
-    ],
-  },
-  {
-    id: "web",
-    message: "Perfecto, una web nueva puede cambiar todo. ¿Tienes ya negocio en marcha o estás empezando?",
-    options: [
-      { label: "Negocio en marcha", next: "nombre" },
-      { label: "Estoy empezando", next: "nombre" },
-    ],
-  },
-  {
-    id: "mejora",
-    message: "Entendido. Muchas webs pierden clientes sin saberlo. ¿Cuál es el mayor problema ahora mismo?",
-    options: [
-      { label: "No recibo contactos", next: "nombre" },
-      { label: "Se ve anticuada", next: "nombre" },
-      { label: "Va muy lenta", next: "nombre" },
-    ],
-  },
-  {
-    id: "ads",
-    message: "La publicidad bien hecha multiplica los resultados. ¿Tienes web actualmente?",
-    options: [
-      { label: "Sí, tengo web", next: "nombre" },
-      { label: "No tengo web", next: "nombre" },
-    ],
-  },
-  {
-    id: "precio",
-    message: "Nuestras webs empiezan desde 500€. El precio final depende de tu proyecto. ¿Quieres que un asesor te prepare un presupuesto personalizado?",
-    options: [
-      { label: "Sí, quiero presupuesto", next: "nombre" },
-      { label: "Primero tengo dudas", next: "welcome" },
-    ],
-  },
-  {
-    id: "nombre",
-    message: "Genial. ¿Cómo te llamas para que tu asesor pueda atenderte de forma personalizada?",
-    input: true,
-    inputPlaceholder: "Tu nombre...",
-    next: "final",
-  },
-  {
-    id: "final",
-    message: (name) =>
-      `¡Perfecto, ${name}! Un asesor de Rotulweb te atenderá ahora mismo por el chat. Si prefieres, también puedes escribirnos por WhatsApp. 🚀`,
-    options: [
-      {
-        label: "💬 Abrir WhatsApp",
-        action: () =>
-          window.open(
-            "https://wa.me/34600000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20web%20para%20mi%20negocio",
-            "_blank"
-          ),
-      },
-      { label: "Seguir por el chat", action: () => {} },
-    ],
-  },
-];
+const WEBHOOK_URL = import.meta.env.VITE_LEAD_WEBHOOK_URL || "";
 
-function getStep(id) {
-  return BOT_STEPS.find((s) => s.id === id);
+const initialLead = {
+  service: "",
+  businessType: "",
+  hasWebsite: "",
+  goal: "",
+  name: "",
+  email: "",
+  phone: "",
+};
+
+function getLeadScore(lead) {
+  let score = 5;
+  if (lead.hasWebsite === "No") score += 3;
+  if (lead.businessType) score += 1;
+  if (lead.email) score += 1;
+  if (lead.phone) score += 1;
+  return Math.min(score, 10);
+}
+
+async function saveLead(lead) {
+  const payload = {
+    ...lead,
+    brand: LEAD_CAPTURE_CONFIG.brand,
+    source: "rotulweb-chatbot",
+    createdAt: new Date().toISOString(),
+    score: getLeadScore(lead),
+  };
+
+  // Always keep a local fallback so a temporary network failure does not lose the lead.
+  try {
+    const existing = JSON.parse(localStorage.getItem("rotulweb_leads") || "[]");
+    localStorage.setItem("rotulweb_leads", JSON.stringify([payload, ...existing].slice(0, 100)));
+  } catch {
+    // localStorage may be unavailable in private/restricted browser contexts.
+  }
+
+  if (!WEBHOOK_URL) return { ok: true, delivered: false };
+
+  try {
+    const response = await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    return { ok: response.ok, delivered: response.ok };
+  } catch {
+    return { ok: false, delivered: false };
+  }
 }
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [currentStep, setCurrentStep] = useState("welcome");
-  const [inputValue, setInputValue] = useState("");
-  const [userName, setUserName] = useState("");
   const [showNotif, setShowNotif] = useState(false);
+  const [stage, setStage] = useState("welcome");
+  const [lead, setLead] = useState(initialLead);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
-  // Notificación de bienvenida tras 5 segundos
   useEffect(() => {
-    const t = setTimeout(() => setShowNotif(true), 5000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setShowNotif(true), 5000);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Inicializar con mensaje de bienvenida al abrir
   useEffect(() => {
     if (open && messages.length === 0) {
-      const step = getStep("welcome");
-      setMessages([{ from: "bot", text: step.message, step: "welcome" }]);
+      setMessages([
+        {
+          from: "bot",
+          text: `👋 ¡Hola! Soy el asistente de ${LEAD_CAPTURE_CONFIG.brand}. Puedo orientarte sobre una web para tu negocio.`,
+        },
+        { from: "bot", text: "¿Qué necesitas?" },
+      ]);
     }
-  }, [open]);
+  }, [open, messages.length]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  function handleOption(option) {
-    setMessages((prev) => [...prev, { from: "user", text: option.label }]);
+  function addBot(text) {
+    setMessages((prev) => [...prev, { from: "bot", text }]);
+  }
 
-    if (option.action) {
-      option.action();
+  function addUser(text) {
+    setMessages((prev) => [...prev, { from: "user", text }]);
+  }
+
+  function choose(field, value, next, reply) {
+    addUser(value);
+    setLead((prev) => ({ ...prev, [field]: value }));
+    setStage(next);
+    setTimeout(() => addBot(reply), 300);
+  }
+
+  async function submitField(field, next, reply) {
+    const value = input.trim();
+    if (!value) return;
+    addUser(value);
+    const updated = { ...lead, [field]: value };
+    setLead(updated);
+    setInput("");
+    setStage(next);
+
+    if (next === "done") {
+      const result = await saveLead(updated);
+      addBot(
+        `¡Gracias, ${updated.name}! Ya tengo la información. Te contactaremos para preparar una propuesta para tu negocio.${
+          result.delivered ? " ✅ Hemos recibido tus datos." : ""
+        }`
+      );
       return;
     }
 
-    const nextStep = getStep(option.next);
-    if (!nextStep) return;
-
-    setTimeout(() => {
-      const msg =
-        typeof nextStep.message === "function"
-          ? nextStep.message(userName)
-          : nextStep.message;
-      setMessages((prev) => [...prev, { from: "bot", text: msg, step: nextStep.id }]);
-      setCurrentStep(nextStep.id);
-    }, 500);
+    setTimeout(() => addBot(reply), 300);
   }
 
-  function handleInput(e) {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-    const name = inputValue.trim();
-    setUserName(name);
-    setMessages((prev) => [...prev, { from: "user", text: name }]);
-    setInputValue("");
+  const options = {
+    welcome: [
+      ["Quiero una web nueva", "service", "web"],
+      ["Mejorar mi web actual", "service", "web"],
+      ["Saber cuánto cuesta", "service", "price"],
+    ],
+    web: [
+      ...LEAD_CAPTURE_CONFIG.idealClients.slice(0, 8).map((type) => [type, "businessType", "website"]),
+      ["Otro negocio", "businessType", "website"],
+    ],
+    price: [
+      ["Quiero presupuesto", "service", "web"],
+      ["Solo quiero información", "service", "web"],
+    ],
+    website: [
+      ["Sí", "hasWebsite", "goal"],
+      ["No", "hasWebsite", "goal"],
+    ],
+    goal: [
+      ["Conseguir más clientes", "goal", "name"],
+      ["Dar una imagen profesional", "goal", "name"],
+      ["Reservas / citas / contactos", "goal", "name"],
+      ["Automatizar procesos con IA", "goal", "name"],
+    ],
+  };
 
-    const nextStep = getStep("final");
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { from: "bot", text: nextStep.message(name), step: "final" },
-      ]);
-      setCurrentStep("final");
+  const replies = {
+    web: "Perfecto. ¿Qué tipo de negocio tienes?",
+    price: `Trabajamos con proyectos desde ${LEAD_CAPTURE_CONFIG.startingPrice}€ y hasta ${LEAD_CAPTURE_CONFIG.maxPrice}€, según lo que necesite el negocio. ¿Quieres que valoremos tu caso?`,
+    website: "¿Tienes actualmente una página web?",
+    goal: "¿Qué te gustaría conseguir principalmente con la nueva web?",
+    name: "Genial. ¿Cómo te llamas?",
+  };
 
-      // Pasar nombre a Crisp si está disponible
-      if (window.$crisp) {
-        window.$crisp.push(["set", "user:nickname", [name]]);
-      }
-    }, 500);
+  function handleChoice(label, field, next) {
+    if (next === "web") {
+      choose(field, label, next, replies[next]);
+      return;
+    }
+    if (next === "price") {
+      choose(field, label, "web", replies.price);
+      return;
+    }
+    if (next === "website") {
+      choose(field, label, next, replies.website);
+      return;
+    }
+    if (next === "goal") {
+      choose(field, label, next, replies.goal);
+      return;
+    }
+    if (next === "name") {
+      choose(field, label, next, replies.name);
+    }
   }
 
-  const step = getStep(currentStep);
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (stage === "name") return submitField("name", "email", "¿Cuál es tu email?");
+    if (stage === "email") return submitField("email", "phone", "¿Cuál es el mejor teléfono para contactarte?");
+    if (stage === "phone") return submitField("phone", "done", "");
+  }
+
+  const buttons = options[stage] || [];
+  const inputPlaceholder =
+    stage === "name" ? "Tu nombre..." : stage === "email" ? "tu@email.com" : "Tu teléfono...";
+  const needsInput = ["name", "email", "phone"].includes(stage);
 
   return (
     <>
-      {/* Botón flotante */}
       <button
         className="chatbot-toggle"
-        onClick={() => { setOpen((o) => !o); setShowNotif(false); }}
+        onClick={() => {
+          setOpen((current) => !current);
+          setShowNotif(false);
+        }}
         aria-label="Abrir chat de atención"
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
         )}
         {showNotif && !open && <span className="chatbot-notif">1</span>}
       </button>
 
-      {/* Burbuja de notificación */}
       {showNotif && !open && (
         <div className="chatbot-bubble" onClick={() => { setOpen(true); setShowNotif(false); }}>
-          👋 ¿Necesitas más clientes? ¡Hablemos!
+          👋 ¿Quieres una web para conseguir más clientes?
         </div>
       )}
 
-      {/* Ventana del chat */}
       {open && (
-        <div className="chatbot-window" role="dialog" aria-label="Chat de atención al cliente">
+        <div className="chatbot-window" role="dialog" aria-label="Asistente de Rótul Web">
           <div className="chatbot-header">
             <div className="chatbot-avatar">R</div>
             <div>
-              <p className="chatbot-name">Asesor Rotulweb</p>
-              <p className="chatbot-status">🟢 En línea ahora</p>
+              <p className="chatbot-name">Asistente Rótul Web</p>
+              <p className="chatbot-status">🟢 Disponible</p>
             </div>
             <button className="chatbot-close" onClick={() => setOpen(false)} aria-label="Cerrar chat">✕</button>
           </div>
 
           <div className="chatbot-messages">
-            {messages.map((msg, i) => (
-              <div key={i} className={`chatbot-msg chatbot-msg--${msg.from}`}>
-                {msg.text}
+            {messages.map((message, index) => (
+              <div key={index} className={`chatbot-msg chatbot-msg--${message.from}`}>
+                {message.text}
               </div>
             ))}
 
-            {/* Opciones del paso actual */}
-            {step && step.options && currentStep === messages[messages.length - 1]?.step && (
+            {buttons.length > 0 && (
               <div className="chatbot-options">
-                {step.options.map((opt) => (
-                  <button key={opt.label} className="chatbot-option" onClick={() => handleOption(opt)}>
-                    {opt.label}
+                {buttons.map(([label, field, next]) => (
+                  <button key={label} className="chatbot-option" onClick={() => handleChoice(label, field, next)}>
+                    {label}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Input de nombre */}
-            {step?.input && currentStep === messages[messages.length - 1]?.step && (
-              <form className="chatbot-input-row" onSubmit={handleInput}>
+            {needsInput && (
+              <form className="chatbot-input-row" onSubmit={handleSubmit}>
                 <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder={step.inputPlaceholder}
+                  type={stage === "email" ? "email" : stage === "phone" ? "tel" : "text"}
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  placeholder={inputPlaceholder}
+                  required
                   autoFocus
                 />
                 <button type="submit">→</button>
               </form>
             )}
 
+            {stage === "done" && (
+              <div className="chatbot-options">
+                <button
+                  className="chatbot-option"
+                  onClick={() => window.open("mailto:?subject=Solicitud%20de%20web%20-%20Rótul%20Web", "_blank")}
+                >
+                  📧 Abrir correo
+                </button>
+              </div>
+            )}
             <div ref={bottomRef} />
           </div>
         </div>
