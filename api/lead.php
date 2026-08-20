@@ -1,6 +1,6 @@
 <?php
-// Rótul Web - free lead receiver for PHP hosting (e.g. Plesk).
-// No external API or paid service is required.
+// Rótul Web - lead receiver for the existing PHP/Plesk hosting.
+// No paid API is required.
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -19,7 +19,6 @@ if (!is_array($data)) {
     exit;
 }
 
-// Honeypot: bots should leave this empty.
 if (!empty($data['website'])) {
     echo json_encode(['ok' => true]);
     exit;
@@ -49,7 +48,6 @@ if ($name === '' || !$email || $phone === '') {
 
 $line = [date('c'), $name, $email, $phone, $business, $service, $hasWebsite, $goal, $score];
 
-// Store leads outside the public web root when possible.
 $storageDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'storage';
 if (!is_dir($storageDir)) {
     @mkdir($storageDir, 0750, true);
@@ -59,15 +57,20 @@ $csvPath = $storageDir . DIRECTORY_SEPARATOR . 'leads.csv';
 $isNew = !file_exists($csvPath);
 $fp = @fopen($csvPath, 'ab');
 if ($fp) {
-    if ($isNew) {
-        fputcsv($fp, ['created_at','name','email','phone','business','service','has_website','goal','score']);
+    if (flock($fp, LOCK_EX)) {
+        if ($isNew) {
+            fputcsv($fp, ['created_at','name','email','phone','business','service','has_website','goal','score']);
+        }
+        fputcsv($fp, $line);
+        fflush($fp);
+        flock($fp, LOCK_UN);
     }
-    fputcsv($fp, $line);
     fclose($fp);
 }
 
-$subject = '🔥 Nuevo lead de Rótul Web';
-$body = "Nuevo cliente potencial recibido desde la web.\n\n"
+$to = 'rotulmon@gmail.com';
+$subject = 'Nuevo cliente potencial - Rótul Web';
+$body = "Nuevo cliente potencial recibido desde rotulweb.com.\n\n"
       . "Nombre: {$name}\n"
       . "Email: {$email}\n"
       . "Teléfono: {$phone}\n"
@@ -82,7 +85,7 @@ $headers = "From: Rótul Web <info@rotulweb.com>\r\n"
          . "Reply-To: {$email}\r\n"
          . "Content-Type: text/plain; charset=UTF-8\r\n";
 
-$mailSent = @mail('info@rotulweb.com', $subject, $body, $headers);
+$mailSent = @mail($to, $subject, $body, $headers);
 
 http_response_code(200);
 echo json_encode(['ok' => true, 'mailSent' => $mailSent]);
