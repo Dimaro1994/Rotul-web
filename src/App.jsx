@@ -1,4 +1,5 @@
 ﻿import { motion } from "framer-motion";
+import { useState } from "react";
 import ChatBot from "./ChatBot";
 
 const services = [
@@ -139,6 +140,49 @@ function fadeIn(delay = 0) {
 }
 
 function App() {
+  const [contactStatus, setContactStatus] = useState("");
+  const [contactSending, setContactSending] = useState(false);
+
+  async function handleContactSubmit(event) {
+    event.preventDefault();
+    setContactStatus("");
+    setContactSending(true);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: "",
+      businessType: "",
+      hasWebsite: "",
+      goal: formData.get("message"),
+      score: 0,
+    };
+
+    try {
+      const response = await fetch("/api/lead.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "No se pudo enviar el formulario");
+      }
+
+      form.reset();
+      setContactStatus("Recibido. Te contactaremos lo antes posible.");
+    } catch (error) {
+      setContactStatus("No hemos podido enviar el formulario. Inténtalo de nuevo.");
+    } finally {
+      setContactSending(false);
+    }
+  }
+
   return (
     <>
       <header className="topbar">
@@ -358,24 +402,26 @@ function App() {
             Cuéntame tu objetivo y te propongo una estrategia clara para atraer
             más clientes.
           </p>
-          <form className="contact-form">
+          <form className="contact-form" onSubmit={handleContactSubmit}>
             <label htmlFor="name">Nombre</label>
-            <input id="name" name="name" type="text" placeholder="Tu nombre" />
+            <input id="name" name="name" type="text" placeholder="Tu nombre" required />
             <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" placeholder="tu@email.com" />
+            <input id="email" name="email" type="email" placeholder="tu@email.com" required />
             <label htmlFor="message">¿Qué necesitas?</label>
             <textarea
               id="message"
               name="message"
               rows="4"
               placeholder="¿Qué tipo de clientes quieres conseguir y qué estás haciendo ahora?"
+              required
             />
             <p className="form-commitment">
               🔒 Sin compromiso · Te respondemos en menos de 24h
             </p>
-            <button type="submit" className="btn btn-primary">
-              Quiero más clientes
+            <button type="submit" className="btn btn-primary" disabled={contactSending}>
+              {contactSending ? "Enviando..." : "Quiero más clientes"}
             </button>
+            {contactStatus && <p className="form-note">{contactStatus}</p>}
             <p className="form-note">
               Te diremos exactamente qué mejorar para conseguir más clientes.
             </p>
